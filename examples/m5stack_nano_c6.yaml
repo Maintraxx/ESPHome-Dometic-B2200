@@ -1,0 +1,51 @@
+substitutions:
+  name: irtransmitter
+  friendly_name: "IR-Transmitter"
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32-c6-devkitm-1
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+logger:
+api:
+ota:
+  platform: esphome
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+remote_transmitter:
+  id: ir_tx
+  pin: GPIO3
+  carrier_duty_percent: 50%
+  non_blocking: true
+
+# Optional: externer Isttemperatursensor für Anzeige und I Feel.
+# sensor:
+#   - platform: homeassistant
+#     id: wohnwagen_temperatur
+#     entity_id: sensor.wohnwagen_innentemperatur
+
+climate:
+  - platform: dometic_b2200
+    id: dometic_ac
+    name: "Dometic B2200"
+    transmitter_id: ir_tx
+    # temperature_sensor: wohnwagen_temperatur
+    light:
+      name: "Dometic Licht"
+    sleep:
+      name: "Dometic Sleep"
+    i_feel:
+      name: "Dometic I Feel"
